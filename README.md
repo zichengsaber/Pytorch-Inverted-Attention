@@ -12,7 +12,7 @@
 
 本项目很大程度上依赖了`torchvision.models.detection` 中的实现, 原论文中说了Inverted Attention是一个通用的方法,基本可以嵌入在主流的Two stage 和 One stage 的方法中，所以本项目的Inverted Attention 是建立在fasterrcnn_resnet50_fpn 基础上的
 
-### Usage
+### Usage && Details
 
 主要实现有很详细的注释,可以下载好mscoco2017之后直接
 ```
@@ -20,7 +20,20 @@ python IAN.py
 ```
 测试模型的实现
 
+主要模块其实只有IAN.py,其他的CoCoDataset.py是用来测试数据的,剩下的模块都是fasterrcnn_resnet_fpn的组成模块,这个部分可以对照`torchvision.models.detection`的源码来看
 
+主要的一个改动在`roi_heads.py` , 因为我们取得gradients是roi_pools之后的features, 所以要比源码中多一个`inverted_feature_map`参数
+```python
+def forward(
+        self,
+        features,  # type: Dict[str, Tensor]
+        proposals,  # type: List[Tensor]
+        image_shapes,  # type: List[Tuple[int, int]]
+        targets=None,  # type: Optional[List[Dict[str, Tensor]]]
+        inverted_feature_map=None, # type: Tensor
+    ):
+
+```
 
 ### problem
 
